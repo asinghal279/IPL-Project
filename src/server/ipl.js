@@ -1,5 +1,7 @@
 var fs = require('fs');
 
+
+//Reading data from Matches.csv to convert to JSON
 var f = fs.readFileSync('../data/matches.csv', {encoding: 'utf-8'}, 
     function(err){console.log(err);});
 
@@ -9,14 +11,34 @@ headers = f.shift().split(",");
 
 var json = [];    
 f.forEach(function(d){
-    tmp = {}
-    row = d.split(",")
-    for(var i = 0; i < headers.length; i++){
+    let tmp = {}
+    let row = d.split(",")
+    for(let i = 0; i < headers.length; i++){
             tmp[headers[i]] = row[i];
     }
     json.push(tmp);
 });
 json.pop();
+
+
+// Reading data from deliveries.csv to convert to json
+let k = fs.readFileSync('../data/deliveries.csv', {encoding: 'utf-8'}, 
+    function(err){console.log(err);});
+
+k = k.split("\n"); 
+headers_deliveries = k.shift().split(",");
+    
+let json_deliveries=[];
+k.forEach(function(d){
+    let tmp = {};
+    let row = d.split(",")
+    for(let i = 0; i < headers_deliveries.length; i++){
+        tmp[headers_deliveries[i]] = row[i];
+    }
+    json_deliveries.push(tmp);
+});
+
+// console.log(json_deliveries);
 
 
 
@@ -64,9 +86,9 @@ function matchesWon(data)
     function(err){console.log(err);});
 }
 
-// console.log(json);
-matchesPlayed(json);
-matchesWon(json);
+console.log(json);
+// matchesPlayed(json);
+// matchesWon(json);
 
 
 
