@@ -1,6 +1,6 @@
 var fs = require('fs');
 
-var f = fs.readFileSync('./matches.csv', {encoding: 'utf-8'}, 
+var f = fs.readFileSync('../data/matches.csv', {encoding: 'utf-8'}, 
     function(err){console.log(err);});
 
 f = f.split("\n");
@@ -18,6 +18,8 @@ f.forEach(function(d){
 });
 json.pop();
 
+
+
 function matchesPlayed(data){
     let obj = {};
     data.forEach(item => {
@@ -31,6 +33,8 @@ function matchesPlayed(data){
             
         }
     })
-    return obj;
+    let outPath = '../public/output/matchPerYear.json';
+    fs.writeFileSync(outPath, JSON.stringify(obj), 'utf8', 
+    function(err){console.log(err);});
 }
 console.log(matchesPlayed(json));
