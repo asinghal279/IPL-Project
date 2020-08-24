@@ -37,7 +37,8 @@ function top10EconomicalBowlers(matches, deliveries){
         return a[1]-b[1];
     })
 
-
+    // console.log(arrayWithEconomies.slice(0,10));
+    
     let final_array = [];
     for(let i = 0;i< 10;i++)
     {

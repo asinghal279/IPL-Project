@@ -1,15 +1,15 @@
 function matchesPlayed(data){
-    let obj = {};
-    data.forEach(item => {
-        if(obj.hasOwnProperty(item.season))
+    let obj = data.map((el) => el.season).reduce((acc, curr) => {
+        if(acc[curr])
         {
-            obj[item.season]++;
+            acc[curr]++;
         }
         else
         {
-            obj[item.season]=1;
+            acc[curr]=1;
         }
-    })
+        return acc;
+    },{})
     return obj;
 }
 
