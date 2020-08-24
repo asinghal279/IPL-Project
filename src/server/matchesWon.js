@@ -1,23 +1,23 @@
 function matchesWon(data)
 {
-    let obj = {}
-    data.forEach(item => {
-        if(obj.hasOwnProperty(item.season))
+    let obj = data.map(el => [el.season,el.winner]).reduce((acc, curr) => {
+        let year = curr[0];
+        let winner = curr[1];
+        if(acc[year])
         {
-            if(obj[item.season].hasOwnProperty(item.winner))
+            if(acc[year].hasOwnProperty(winner))
             {
-                obj[item.season][item.winner]++;
+                acc[year][winner]++;
             }
-            else
-            {
-                obj[item.season][item.winner]=1;
+            else{
+                acc[year][winner]=1;
             }
         }
-        else
-        {
-            obj[item.season]={};
+        else{
+            acc[year]={};
         }
-    })
+        return acc;
+    },{});
     return obj;   
 }
 
