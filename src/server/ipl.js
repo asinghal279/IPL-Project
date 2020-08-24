@@ -1,16 +1,17 @@
-var fs = require('fs');
-const { SSL_OP_DONT_INSERT_EMPTY_FRAGMENTS } = require('constants');
+let fs = require('fs');
+let path = require('path');
 
-
+let matchesPath = path.join(__dirname, '../data/matches.csv');
+let deliveriesPath = path.join(__dirname, '../data/deliveries.csv');
 //Reading data from Matches.csv to convert to JSON
-var f = fs.readFileSync('../data/matches.csv', {encoding: 'utf-8'}, 
+let f = fs.readFileSync(matchesPath, {encoding: 'utf-8'}, 
     function(err){console.log(err);});
 
 f = f.split("\n");
 
 headers = f.shift().split(",");
 
-var json = [];    
+let json = [];    
 f.forEach(function(d){
     let tmp = {}
     let row = d.split(",")
@@ -23,7 +24,7 @@ json.pop();
 
 
 // Reading data from deliveries.csv to convert to json
-let k = fs.readFileSync('../data/deliveries.csv', {encoding: 'utf-8'}, 
+let k = fs.readFileSync(deliveriesPath, {encoding: 'utf-8'}, 
     function(err){console.log(err);});
 
 k = k.split("\n"); 
@@ -53,10 +54,9 @@ function matchesPlayed(data){
         else
         {
             obj[item.season]=1;
-            
         }
     })
-    let outPath = '../public/output/matchPerYear.json';
+    let outPath = path.join(__dirname,'../public/output/matchPerYear.json');
     fs.writeFileSync(outPath, JSON.stringify(obj), 'utf8', 
     function(err){console.log(err);});
 }
@@ -82,7 +82,7 @@ function matchesWon(data)
             obj[item.season]={};
         }
     })
-    let outPath = '../public/output/matchesWonPerTeamPerYear.json';
+    let outPath = path.join(__dirname,'../public/output/matchesWonPerTeamPerYear.json');
     fs.writeFileSync(outPath, JSON.stringify(obj), 'utf8', 
     function(err){console.log(err);});
 }
@@ -134,9 +134,9 @@ function top10EconomicalBowlers(matches, deliveries){
         final_array.push(arrayWithEconomies[i][0]);
     }
 
-    console.log(final_array);
+    // console.log(final_array);
 
-    let outPath = '../public/output/top10EconomicalBowlers.json';
+    let outPath = path.join(__dirname,'../public/output/top10EconomicalBowlers.json');
     fs.writeFileSync(outPath, JSON.stringify(final_array), 'utf8', 
     function(err){console.log(err);});
 }
@@ -154,24 +154,24 @@ function extraRuns(matches, deliveries){
     deliveries.forEach(item => {
         if(matchesin2016.indexOf(item.match_id) > -1)
         {
-            if(obj[item.batting_team])
+            if(obj.hasOwnProperty(item.batting_team))
             {
-                obj[item.batting_team] += extra_runs;
+                obj[item.batting_team] += parseInt(item.extra_runs);
             }
             else{
-                obj[item.batting_team] = 0;
+                obj[item.batting_team] = 1;
             }
         }
     })
 
-    let outPath = '../public/output/extraRunsPerTeamin2016.json';
+    let outPath = path.join(__dirname,'../public/output/extraRunsPerTeamin2016.json');
     fs.writeFileSync(outPath, JSON.stringify(obj), 'utf8', 
     function(err){console.log(err);});
-    
+    console.log(obj);
 }
 
 
-extraRuns(json, json_deliveries);
+// extraRuns(json, json_deliveries);
 // top10EconomicalBowlers(json, json_deliveries);
 // console.log(json);
 // matchesPlayed(json);
