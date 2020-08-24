@@ -1,24 +1,24 @@
 function extraRuns(matches, deliveries){
     let matchesin2016 = [];
-    let obj = {};
-    matches.forEach(item => {
-        if(item.season == 2016)
-        {
-            matchesin2016.push(item.id)
-        }
+   
+    matchesin2016 = matches.map(el => {
+        if(el.season==2016)
+            return el.id;
     })
-    deliveries.forEach(item => {
+
+    let obj = deliveries.reduce((acc, item) => {
         if(matchesin2016.indexOf(item.match_id) > -1)
         {
-            if(obj.hasOwnProperty(item.batting_team))
+            if(acc.hasOwnProperty(item.batting_team))
             {
-                obj[item.batting_team] += parseInt(item.extra_runs);
+                acc[item.batting_team] += parseInt(item.extra_runs);
             }
             else{
-                obj[item.batting_team] = 1;
+                acc[item.batting_team] = 1;
             }
         }
-    })
+        return acc;
+    }, {})
 
     return obj;
 }
