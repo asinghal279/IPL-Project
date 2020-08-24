@@ -1,8 +1,15 @@
 let fs = require('fs');
 let path = require('path');
+let matchesPlayed = require('./matchesPlayed.js');
+let matchesWon = require('./matchesWon.js');
+const top10EconomicalBowlers = require('./economicalBowlers.js');
+const extraRuns = require('./extraRuns.js');
 
+// Setting the Paths
 let matchesPath = path.join(__dirname, '../data/matches.csv');
 let deliveriesPath = path.join(__dirname, '../data/deliveries.csv');
+
+
 //Reading data from Matches.csv to convert to JSON
 let f = fs.readFileSync(matchesPath, {encoding: 'utf-8'}, 
     function(err){console.log(err);});
@@ -43,139 +50,23 @@ k.forEach(function(d){
 // console.log(json_deliveries);
 
 
-
-function matchesPlayed(data){
-    let obj = {};
-    data.forEach(item => {
-        if(obj.hasOwnProperty(item.season))
-        {
-            obj[item.season]++;
-        }
-        else
-        {
-            obj[item.season]=1;
-        }
-    })
-    let outPath = path.join(__dirname,'../public/output/matchPerYear.json');
-    fs.writeFileSync(outPath, JSON.stringify(obj), 'utf8', 
+let outPath1 = path.join(__dirname,'../public/output/matchPerYear.json');
+fs.writeFileSync(outPath1, JSON.stringify(matchesPlayed(json)), 'utf8', 
     function(err){console.log(err);});
-}
 
-
-function matchesWon(data)
-{
-    let obj = {}
-    data.forEach(item => {
-        if(obj.hasOwnProperty(item.season))
-        {
-            if(obj[item.season].hasOwnProperty(item.winner))
-            {
-                obj[item.season][item.winner]++;
-            }
-            else
-            {
-                obj[item.season][item.winner]=1;
-            }
-        }
-        else
-        {
-            obj[item.season]={};
-        }
-    })
-    let outPath = path.join(__dirname,'../public/output/matchesWonPerTeamPerYear.json');
-    fs.writeFileSync(outPath, JSON.stringify(obj), 'utf8', 
+let outPath2 = path.join(__dirname,'../public/output/matchesWonPerTeamPerYear.json');
+fs.writeFileSync(outPath2, JSON.stringify(matchesWon(json)), 'utf8', 
     function(err){console.log(err);});
-}
 
-function top10EconomicalBowlers(matches, deliveries){
-    let matchesin2015 = [];
-    let obj = {};
-    matches.forEach(item => {
-        if(item.season == 2015)
-        {
-            matchesin2015.push(item.id)
-        }
-    })
-    deliveries.forEach(item => {
-        if(matchesin2015.indexOf(item.match_id) > -1)
-        {
-            if(obj.hasOwnProperty(item.bowler))
-            {
-                obj[item.bowler][0] += parseInt(item.total_runs);
-                obj[item.bowler][1]++;
-            }
-            else
-            {
-                obj[item.bowler] = [0,0];
-            }
-        }
-    })
-    let arrayWithEconomies = [];
-    // console.log(obj);
-    for(item in obj){
-        let overs = (obj[item][1])/6;
-        let total_runs = obj[item][0];
-        // console.log(overs);
-        let economy = total_runs/overs;
-        let nest = [item, economy];
-        // console.log(nest);
-        arrayWithEconomies.push(nest);
-    }
-
-    arrayWithEconomies.sort((a,b)=>{
-        return a[1]-b[1];
-    })
-
-    // console.log(arrayWithEconomies.slice(0,10));
-
-    let final_array = [];
-    for(let i = 0;i< 10;i++)
-    {
-        final_array.push(arrayWithEconomies[i][0]);
-    }
-
-    // console.log(final_array);
-
-    let outPath = path.join(__dirname,'../public/output/top10EconomicalBowlers.json');
-    fs.writeFileSync(outPath, JSON.stringify(final_array), 'utf8', 
+let outPath3 = path.join(__dirname,'../public/output/top10EconomicalBowlers.json');
+fs.writeFileSync(outPath3, JSON.stringify(top10EconomicalBowlers(json,json_deliveries)), 'utf8', 
     function(err){console.log(err);});
-}
 
-
-function extraRuns(matches, deliveries){
-    let matchesin2016 = [];
-    let obj = {};
-    matches.forEach(item => {
-        if(item.season == 2016)
-        {
-            matchesin2016.push(item.id)
-        }
-    })
-    deliveries.forEach(item => {
-        if(matchesin2016.indexOf(item.match_id) > -1)
-        {
-            if(obj.hasOwnProperty(item.batting_team))
-            {
-                obj[item.batting_team] += parseInt(item.extra_runs);
-            }
-            else{
-                obj[item.batting_team] = 1;
-            }
-        }
-    })
-
-    let outPath = path.join(__dirname,'../public/output/extraRunsPerTeamin2016.json');
-    fs.writeFileSync(outPath, JSON.stringify(obj), 'utf8', 
+let outPath4 = path.join(__dirname,'../public/output/extraRunsPerTeamin2016.json');
+fs.writeFileSync(outPath4, JSON.stringify(extraRuns(json, json_deliveries)), 'utf8', 
     function(err){console.log(err);});
-    console.log(obj);
-}
 
 
-// extraRuns(json, json_deliveries);
-// top10EconomicalBowlers(json, json_deliveries);
-// console.log(json);
-// matchesPlayed(json);
-// matchesWon(json);
 
 
 
