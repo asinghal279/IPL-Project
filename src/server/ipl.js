@@ -141,7 +141,38 @@ function top10EconomicalBowlers(matches, deliveries){
     function(err){console.log(err);});
 }
 
-top10EconomicalBowlers(json, json_deliveries);
+
+function extraRuns(matches, deliveries){
+    let matchesin2016 = [];
+    let obj = {};
+    matches.forEach(item => {
+        if(item.season == 2016)
+        {
+            matchesin2016.push(item.id)
+        }
+    })
+    deliveries.forEach(item => {
+        if(matchesin2016.indexOf(item.match_id) > -1)
+        {
+            if(obj[item.batting_team])
+            {
+                obj[item.batting_team] += extra_runs;
+            }
+            else{
+                obj[item.batting_team] = 0;
+            }
+        }
+    })
+
+    let outPath = '../public/output/extraRunsPerTeamin2016.json';
+    fs.writeFileSync(outPath, JSON.stringify(obj), 'utf8', 
+    function(err){console.log(err);});
+    
+}
+
+
+extraRuns(json, json_deliveries);
+// top10EconomicalBowlers(json, json_deliveries);
 // console.log(json);
 // matchesPlayed(json);
 // matchesWon(json);
