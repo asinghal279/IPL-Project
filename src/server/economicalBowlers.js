@@ -1,42 +1,39 @@
-function top10EconomicalBowlers(matches, deliveries){
-    let matchesin2015 = [];
-    
-    matchesin2015 = matches.map(item => {
-        if(item.season == 2015)
-            return item.id;
+function top10EconomicalBowlers(matches, deliveries) {
+  let matchesin2015 = matches
+    .filter((match) => match["season"] == 2015)
+    .map((match) => parseInt(match["id"]));
+
+  let bowlersData = deliveries.reduce((result, delivery) => {
+    if (matchesin2015.indexOf(parseInt(delivery.match_id)) > -1) {
+      if (result.hasOwnProperty(delivery.bowler)) {
+        result[delivery.bowler][0] += parseInt(delivery.total_runs);
+        result[delivery.bowler][1]++;
+      } else {
+        result[delivery.bowler] = [parseInt(delivery.total_runs), 1];
+      }
+    }
+    return result;
+  }, {});
+
+  let arrayWithEconomies = [];
+
+  arrayWithEconomies = Object.keys(bowlersData)
+    .map((bowler) => {
+      let overs = bowlersData[bowler][1] / 6;
+      let total = bowlersData[bowler][0];
+      let economy = total / overs;
+      return [bowler, economy];
     })
+    .sort((a, b) => {
+      return a[1] - b[1];
+    })
+    .reduce((acc, bowler) => {
+      return acc.concat(bowler[0]);
+    }, [])
+    .slice(0, 10);
+  // console.log(arrayWithEconomies);
 
-    let obj = deliveries.reduce((acc, item) => {
-        if(matchesin2015.indexOf(item.match_id) > -1)
-        {
-            if(acc.hasOwnProperty(item.bowler))
-            {
-                acc[item.bowler][0] += parseInt(item.total_runs);
-                acc[item.bowler][1]++;
-            }
-            else
-            {
-                acc[item.bowler] = [0,0];
-            }
-        }
-        return acc;
-    }, {})
-
-    let arrayWithEconomies = [];
- 
-    arrayWithEconomies = Object.keys(obj).map((el) => {
-        let overs = (obj[el][1])/6;
-        let total_runs = obj[el][0];
-        let economy = total_runs/overs;
-        return [el, economy];
-    }).sort((a,b)=>{
-        return a[1]-b[1];
-    }).reduce((acc, curr) => {
-        return acc.concat(curr[0]);
-    }, []).slice(0,10);
-    console.log(arrayWithEconomies);
-
-    return arrayWithEconomies;
+  return arrayWithEconomies;
 }
 
 module.exports = top10EconomicalBowlers;
