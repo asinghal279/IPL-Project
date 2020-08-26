@@ -86,7 +86,7 @@ function top10EconomicalBowlers(matches, deliveries, year) {
 }
 
 function highestDismisals(deliveries) {
-  return Object.values(
+  return Object.entries(
     deliveries
       .filter((bowl) => bowl.player_dismissed != "")
       .reduce((acc, curr) => {
@@ -101,12 +101,12 @@ function highestDismisals(deliveries) {
       }, {})
   )
     .map((array) => {
-      return Object.entries(array)
+      return [array[0],Object.entries(array[1])
         .sort((a, b) => b[1] - a[1])
-        .shift();
+        .shift()];
     })
-    .sort((a, b) => b[1] - a[1])
-    .shift()[1];
+    .sort((a, b) => b[1][1] - a[1][1])
+    .shift();
 }
 
 module.exports = {
