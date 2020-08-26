@@ -56,7 +56,11 @@ function top10EconomicalBowlers(matches, deliveries, year) {
   let bowlersData = deliveries.reduce((result, delivery) => {
     if (matchesIn2015.indexOf(parseInt(delivery.match_id)) > -1) {
       if (result.hasOwnProperty(delivery.bowler)) {
-        result[delivery.bowler][0] = result[delivery.bowler][0] + parseInt(delivery.total_runs) - parseInt(delivery.legbye_runs) - parseInt(delivery.bye_runs);
+        result[delivery.bowler][0] =
+          result[delivery.bowler][0] +
+          parseInt(delivery.total_runs) -
+          parseInt(delivery.legbye_runs) -
+          parseInt(delivery.bye_runs);
         result[delivery.bowler][1]++;
       } else {
         result[delivery.bowler] = [parseInt(delivery.total_runs), 1];
@@ -81,9 +85,34 @@ function top10EconomicalBowlers(matches, deliveries, year) {
     .slice(0, 10);
 }
 
+function highestDismisals(deliveries) {
+  return Object.values(
+    deliveries
+      .filter((bowl) => bowl.player_dismissed != "")
+      .reduce((acc, curr) => {
+        if (acc[curr.bowler]) {
+          if (acc[curr.bowler][curr.batsman]) acc[curr.bowler][curr.batsman]++;
+          else acc[curr.bowler][curr.batsman] = 1;
+        } else {
+          acc[curr.bowler] = {};
+          acc[curr.bowler][curr.batsman] = 1;
+        }
+        return acc;
+      }, {})
+  )
+    .map((array) => {
+      return Object.entries(array)
+        .sort((a, b) => b[1] - a[1])
+        .shift();
+    })
+    .sort((a, b) => b[1] - a[1])
+    .shift()[1];
+}
+
 module.exports = {
   matchesPlayed,
   matchesWon,
   extraRunsPerTeam,
   top10EconomicalBowlers,
+  highestDismisals,
 };
