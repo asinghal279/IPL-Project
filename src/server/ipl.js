@@ -1,5 +1,5 @@
-function matchesPlayed(data) {
-  return data
+function matchesPlayed(matches) {
+  return matches
     .map((match) => match.season)
     .reduce((result, season) => {
       if (result[season]) {
@@ -11,12 +11,10 @@ function matchesPlayed(data) {
     }, {});
 }
 
-function matchesWon(data) {
-  return data
-    .map((match) => [match.season, match.winner])
-    .reduce((result, matchInfo) => {
-      let year = matchInfo[0];
-      let winner = matchInfo[1];
+function matchesWon(matches) {
+  return matches
+    .map((match) =>  ({year:match.season, winner:match.winner}))
+    .reduce((result, {year, winner}) => {
       if (result[year]) {
         if (result[year].hasOwnProperty(winner)) {
           result[year][winner]++;
