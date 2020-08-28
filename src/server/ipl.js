@@ -55,13 +55,19 @@ function top10EconomicalBowlers(matches, deliveries, year) {
 
   let bowlersData = deliveries.reduce((result, delivery) => {
     let bowlerName = delivery.bowler;
-    let totalRunsPerBall = parseInt(delivery.total_runs) - parseInt(delivery.legbye_runs) - parseInt(delivery.bye_runs);
+    let totalRunsPerBall =
+      parseInt(delivery.total_runs) -
+      parseInt(delivery.legbye_runs) -
+      parseInt(delivery.bye_runs);
     if (matchesInYear.indexOf(parseInt(delivery.match_id)) > -1) {
       if (result[bowlerName]) {
         result[bowlerName].totalOverallRuns += totalRunsPerBall;
         result[bowlerName].noOfBalls++;
       } else {
-        result[bowlerName] = ({totalOverallRuns:  totalRunsPerBall, noOfBalls: 1});
+        result[bowlerName] = {
+          totalOverallRuns: totalRunsPerBall,
+          noOfBalls: 1,
+        };
       }
     }
     return result;
@@ -87,25 +93,16 @@ function highestDismisals(deliveries) {
     deliveries
       .filter((bowl) => bowl.player_dismissed != "")
       .reduce((acc, curr) => {
-        if (acc[curr.bowler]) {
-          if (acc[curr.bowler][curr.batsman]) acc[curr.bowler][curr.batsman]++;
-          else acc[curr.bowler][curr.batsman] = 1;
-        } else {
-          acc[curr.bowler] = {};
-          acc[curr.bowler][curr.batsman] = 1;
-        }
+        let bowler = curr.bowler;
+        let batsman = curr.batsman;
+        let bowler_batsman = bowler + "_" + batsman;
+        if (acc[bowler_batsman]) acc[bowler_batsman]++;
+        else acc[bowler_batsman] = 1;
+
         return acc;
       }, {})
   )
-    .map((array) => {
-      return [
-        array[0],
-        Object.entries(array[1])
-          .sort((a, b) => b[1] - a[1])
-          .shift(),
-      ];
-    })
-    .sort((a, b) => b[1][1] - a[1][1])
+    .sort((a, b) => b[1] - a[1])
     .shift();
 }
 
