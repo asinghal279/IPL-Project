@@ -7,7 +7,6 @@ const top10EconomicalBowlers = ipl.top10EconomicalBowlers;
 const extraRuns = ipl.extraRunsPerTeam;
 const highestdismissals = ipl.highestDismisals;
 let createOutput = require("./createOutput");
-const { createSecretKey } = require("crypto");
 
 // Setting the Paths to CSV
 let matchesPath = path.join(__dirname, "../data/matches.csv");

@@ -106,10 +106,44 @@ function highestDismisals(deliveries) {
     .shift();
 }
 
+// function combined(matches, deliveries){
+//   let ids = matches.reduce((acc, curr) => {
+//     if(acc[curr.season])
+//     {
+//       acc[curr.season].push(curr.id);
+//     }
+//     else{
+//       acc[curr.season] = [curr.id];
+//     }
+//     return acc;
+//   }, {});
+//   console.log(ids);
+//   for(let season in ids){
+//     // let sum = 0;
+//     let obj = {};
+//     ids[season].map((id) => {
+//       deliveries.map((delivery) => {
+//         if(delivery.match_id == id){
+//           if(obj[delivery.bowling_team])
+//             obj[delivery.bowling_team] += parseInt(delivery.extra_runs);
+//           else
+//             obj[delivery.bowling_team] = parseInt(delivery.extra_runs);  
+//         }
+//       })
+//     })
+//     ids[season] = obj;
+//   }
+//   console.log(ids);
+// }
+
+
+
+
 module.exports = {
   matchesPlayed,
   matchesWon,
   extraRunsPerTeam,
   top10EconomicalBowlers,
   highestDismisals,
+  // combined
 };
